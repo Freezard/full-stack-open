@@ -1,5 +1,19 @@
 import { useState } from 'react'
 
+const DisplayAnecdote = (props) => {
+  const { title, anecdote, votes } = props
+
+  return (
+    <div>
+      <Headline title={title} />
+      {anecdote}
+      <DisplayVotes votes={votes} />
+    </div>
+  )
+}
+
+const Headline = ({ title }) => <h2>{title}</h2>
+
 const DisplayVotes = ({ votes }) => <div>has {votes} votes</div>
 
 const Button = ( {onClick, text }) => <button onClick={onClick}>{text}</button>
@@ -18,6 +32,8 @@ const App = () => {
    
   const [selected, setSelected] = useState(0)
   const [votes, setVotes] = useState(Array(anecdotes.length).fill(0))
+  const [mostVotes, setMostVotes] = useState(0)
+  const [mostVoted, setMostVoted] = useState(0)
   
   function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
@@ -31,14 +47,19 @@ const App = () => {
     const copy = [...votes]
     copy[selected] += 1
     setVotes(copy)
+
+    if (copy[selected] > mostVotes) {
+      setMostVotes(copy[selected])
+      setMostVoted(selected)
+    }
   }
 
   return (
     <div>
-      {anecdotes[selected]}
-      <DisplayVotes votes={votes[selected]} />
+      <DisplayAnecdote title='Anecdote of the day' anecdote={anecdotes[selected]} votes={votes[selected]} />
       <Button onClick={handleVotes} text='vote' />
       <Button onClick={handleAnecdote} text='next anecdote' />
+      <DisplayAnecdote title='Anecdote with most votes' anecdote={anecdotes[mostVoted]} votes={votes[mostVoted]} />
     </div>
   )
 }
