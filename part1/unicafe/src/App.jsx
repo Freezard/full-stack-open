@@ -37,7 +37,7 @@ const Statistics = (props) => {
   )
 }
 
-const Button = ( {onClick, text }) => <button onClick={onClick}>{text}</button>
+const Button = ({ onClick, text} ) => <button onClick={onClick}>{text}</button>
 
 const App = () => {
   // save clicks of each button to its own state

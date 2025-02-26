@@ -1,6 +1,8 @@
 import { useState } from 'react'
 
-const Button = ( {onClick, text }) => <div><button onClick={onClick}>{text}</button></div>
+const DisplayVotes = ({ votes }) => <div>has {votes} votes</div>
+
+const Button = ( {onClick, text }) => <button onClick={onClick}>{text}</button>
 
 const App = () => {
   const anecdotes = [
@@ -15,7 +17,8 @@ const App = () => {
   ]
    
   const [selected, setSelected] = useState(0)
-
+  const [votes, setVotes] = useState(Array(anecdotes.length).fill(0))
+  
   function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
   }
@@ -24,9 +27,17 @@ const App = () => {
     setSelected(getRandomInt(0, anecdotes.length));
   }
 
+  const handleVotes = () => {
+    const copy = [...votes]
+    copy[selected] += 1
+    setVotes(copy)
+  }
+
   return (
     <div>
       {anecdotes[selected]}
+      <DisplayVotes votes={votes[selected]} />
+      <Button onClick={handleVotes} text='vote' />
       <Button onClick={handleAnecdote} text='next anecdote' />
     </div>
   )
