@@ -57,6 +57,16 @@ const App = () => {
     setFilterName(event.target.value.toLowerCase())
   }
 
+  const handleDeletePerson = (person) => {
+    if (window.confirm(`Delete ${person.name}?`)) {
+      personService
+        .deletePerson(person.id)
+        .then(() => {
+          setPersons(persons.filter(p => p.id !== person.id))
+      })
+    }
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -65,7 +75,7 @@ const App = () => {
       <PersonForm onSubmit={addPerson} valueName={newName} onChangeName={handleNameChange}
         valueNumber={newNumber} onChangeNumber={handleNumberChange} />
       <h2>Numbers</h2>
-      <Persons persons={personsToShow} />
+      <Persons persons={personsToShow} handleDelete={handleDeletePerson} />
     </div>
   )
 }
