@@ -12,7 +12,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterName, setFilterName] = useState('')
-  const [successMessage, setSuccessMessage] = useState(null)
+  const [notification, setNotification] = useState({ message: null, type: null })
 
   useEffect(() => {
     personService
@@ -26,6 +26,13 @@ const App = () => {
     ? persons
     : persons.filter(person => person.name.toLowerCase().includes(filterName))
 
+    const showNotification = (message, type, duration = 5000) => {
+      setNotification({ message, type })
+      setTimeout(() => {
+        setNotification({ message: null, type: null })
+      }, duration)
+    }
+
   const addPerson = (event) => {
     event.preventDefault()
     const existingPerson = persons.find(person => person.name === newName)
@@ -38,12 +45,12 @@ const App = () => {
         .update(existingPerson.id, changedPerson)
         .then(returnedPerson => {
           setPersons(persons.map(person => person.name === newName ? returnedPerson : person))
-          setSuccessMessage(
-            `${returnedPerson.name}'s number was changed to ${returnedPerson.number}`
-          )
-          setTimeout(() => {
-            setSuccessMessage(null)
-          }, 5000)
+          showNotification(
+            `${returnedPerson.name}'s number was changed to ${returnedPerson.number}`, 'success')
+        })
+        .catch(error => {
+          showNotification(
+            `${existingPerson.name} has already been removed from server`, 'error')
         })
       }
       return
@@ -61,12 +68,8 @@ const App = () => {
         setNewName('')
         setNewNumber('')
 
-        setSuccessMessage(
-          `Added ${returnedPerson.name}`
-        )
-        setTimeout(() => {
-          setSuccessMessage(null)
-        }, 5000)
+        showNotification(
+          `Added ${returnedPerson.name}`, 'success')
     })
   }
 
@@ -88,12 +91,8 @@ const App = () => {
         .deletePerson(person.id)
         .then(() => {
           setPersons(persons.filter(p => p.id !== person.id))
-          setSuccessMessage(
-            `Deleted ${person.name}`
-          )
-          setTimeout(() => {
-            setSuccessMessage(null)
-          }, 5000)
+          showNotification(
+            `Deleted ${person.name}`, 'success')
       })
     }
   }
@@ -101,7 +100,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={successMessage} />
+      <Notification message={notification.message} type={notification.type} />
       <Filter name={filterName} onChange={handleFilterNameChange} />
       <h2>Add a new</h2>
       <PersonForm onSubmit={addPerson} valueName={newName} onChangeName={handleNameChange}
