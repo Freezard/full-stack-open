@@ -11,3 +11,12 @@ Content-Type: application/json
     "name": "Dan Roswell",
     "number": "12345"
 }
+
+###
+POST https://full-stack-open-amdx.onrender.com/api/persons
+Content-Type: application/json
+
+{
+    "name": "Dan Roswell",
+    "number": "12345"
+}
