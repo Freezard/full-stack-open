@@ -97,8 +97,12 @@ app.post('/api/persons', (request, response) => {
 
 app.put('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndUpdate(request.params.id, request.body, { new: true })
-    .then(result => {
-      response.status(200).json(result)
+    .then(updatedPerson => {
+      if (updatedPerson) {
+        response.status(200).json(updatedPerson)
+      } else {
+        response.status(404).end()
+      }
     })
     .catch(error => next(error))
 })
