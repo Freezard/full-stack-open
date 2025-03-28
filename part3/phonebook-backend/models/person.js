@@ -7,30 +7,30 @@ const url = process.env.MONGODB_URI
 
 console.log('connecting to', url)
 mongoose.connect(url)
-  .then(result => {
+  .then(() => {
     console.log('connected to MongoDB')
   })
   .catch(error => {
     console.log('error connecting to MongoDB:', error.message)
-})
+  })
 
 const personSchema = new mongoose.Schema({
-    name: {
-      type: String,
-      minLength: 3,
-      required: [true, 'Name required']
-    },
-    number: {
-      type: String,
-      minLength: 8,
-      validate: {
-        validator: function(v) {
-          return /^\d{2,3}-\d+$/.test(v)
-        },
-        message: props => `${props.value} is not a valid phone number!`
+  name: {
+    type: String,
+    minLength: 3,
+    required: [true, 'Name required']
+  },
+  number: {
+    type: String,
+    minLength: 8,
+    validate: {
+      validator: function(v) {
+        return /^\d{2,3}-\d+$/.test(v)
       },
-      required: [true, 'Phone number required']
-    }
+      message: props => `${props.value} is not a valid phone number!`
+    },
+    required: [true, 'Phone number required']
+  }
 })
 
 personSchema.set('toJSON', {
@@ -42,7 +42,7 @@ personSchema.set('toJSON', {
 })
 
 personSchema.pre('findOneAndUpdate', function (next) {
-  this.setOptions({ runValidators: true, context: 'query' });
+  this.setOptions({ runValidators: true, context: 'query' })
   next()
 })
 

@@ -11,27 +11,27 @@ app.use(express.static('dist'))
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
-persons = [
-    { 
-      "id": "1",
-      "name": "Arto Hellas", 
-      "number": "040-123456"
-    },
-    { 
-      "id": "2",
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
-    },
-    { 
-      "id": "3",
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
-    },
-    { 
-      "id": "4",
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
-    }
+let persons = [
+  {
+    'id': '1',
+    'name': 'Arto Hellas',
+    'number': '040-123456'
+  },
+  {
+    'id': '2',
+    'name': 'Ada Lovelace',
+    'number': '39-44-5323523'
+  },
+  {
+    'id': '3',
+    'name': 'Dan Abramov',
+    'number': '12-43-234345'
+  },
+  {
+    'id': '4',
+    'name': 'Mary Poppendieck',
+    'number': '39-23-6423122'
+  }
 ]
 
 app.get('/info', (request, response) => {
@@ -61,7 +61,7 @@ app.get('/api/persons/:id', (request, response, next) => {
 
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(error => next(error))
@@ -72,8 +72,8 @@ app.post('/api/persons', (request, response, next) => {
 
   const existingPerson = persons.find(person => person.name.toLowerCase() === body.name.toLowerCase())
   if (existingPerson) {
-    return response.status(400).json({ 
-      error: 'Name must be unique' 
+    return response.status(400).json({
+      error: 'Name must be unique'
     })
   }
 
@@ -85,7 +85,7 @@ app.post('/api/persons', (request, response, next) => {
   person.save().then(savedPerson => {
     response.status(201).json(savedPerson)
   })
-  .catch(error => next(error))
+    .catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
