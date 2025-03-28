@@ -15,8 +15,15 @@ mongoose.connect(url)
 })
 
 const personSchema = new mongoose.Schema({
-    name: String,
-    number: String,
+    name: {
+      type: String,
+      minLength: 3,
+      required: true
+    },
+    number: {
+      type: String,
+      required: true
+    }
 })
 
 personSchema.set('toJSON', {
@@ -25,6 +32,11 @@ personSchema.set('toJSON', {
     delete returnedObject._id
     delete returnedObject.__v
   }
+})
+
+personSchema.pre('findOneAndUpdate', function (next) {
+  this.setOptions({ runValidators: true, context: 'query' });
+  next()
 })
 
 module.exports = mongoose.model('Person', personSchema)

@@ -48,8 +48,7 @@ const App = () => {
             `${returnedPerson.name}'s number was changed to ${returnedPerson.number}`, 'success')
         })
         .catch(error => {
-          showNotification(
-            `${existingPerson.name} has already been removed from server`, 'error')
+          showNotification(error.response.data.error, 'error')
         })
       }
       return
@@ -62,13 +61,16 @@ const App = () => {
   
     personService
       .create(personObject)
-      .then(returnedPerson => {
-        setPersons(persons.concat(returnedPerson))
+      .then(createdPerson => {
+        setPersons(persons.concat(createdPerson))
         setNewName('')
         setNewNumber('')
 
         showNotification(
-          `Added ${returnedPerson.name}`, 'success')
+          `Added ${createdPerson.name}`, 'success')
+    })
+    .catch(error => {
+      showNotification(error.response.data.error, 'error')
     })
   }
 
