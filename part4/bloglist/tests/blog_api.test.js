@@ -14,7 +14,6 @@ beforeEach(async () => {
   for (const blog of listWithSeveralBlogs) {
     const blogObject = new Blog(blog)
     await blogObject.save()
-    console.log('saved')
   }
 })
 
@@ -23,7 +22,14 @@ test('the correct amount of blogs are returned as json', async () => {
     .expect(200)
     .expect('Content-Type', /application\/json/)
 
-    assert.strictEqual(response.body.length, listWithSeveralBlogs.length)
+  assert.strictEqual(response.body.length, listWithSeveralBlogs.length)
+})
+
+test('the unique identifier property is named id', async () => {
+  const response = await api.get('/api/blogs')
+
+  assert(response.body.length > 0)
+  assert(response.body[0].id)
 })
 
 after(async () => {
