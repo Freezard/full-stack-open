@@ -1,7 +1,7 @@
 const { test, describe } = require('node:test')
 const assert = require('node:assert')
 const listHelper = require('../utils/list_helper')
-const { listWithOneBlog, listWithSeveralBlogs } = require('../utils/test_helpers')
+const { listWithOneBlog, listWithSeveralBlogs } = require('./test_helper')
 
 describe('favorite blog', () => {
   test('of empty list is zero', () => {
