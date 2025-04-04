@@ -69,6 +69,30 @@ test('property likes will default to zero if missing', async () => {
   assert.strictEqual(blog.body.likes, 0)
 })
 
+test('400 Bad Request if title or url is missing', async () => {
+  let newBlog = {
+    author: 'Steven Mall',
+    url: 'https://www.thisisarandomurl.com',
+    likes: 50,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+
+  newBlog = {
+    title: 'New Blog Post',
+    author: 'Steven Mall',
+    likes: 50,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)    
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
