@@ -63,13 +63,13 @@ describe('when there are some blogs saved initially', () => {
         url: 'https://www.thisisarandomurl.com',
       }
 
-      const blog = await api
+      const returnedBlog = await api
         .post('/api/blogs')
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
 
-      assert.strictEqual(blog.body.likes, 0)
+      assert.strictEqual(returnedBlog.body.likes, 0)
     })
 
     test('400 Bad Request if title or url is missing', async () => {
@@ -111,6 +111,39 @@ describe('when there are some blogs saved initially', () => {
 
       const titles = blogsAfterDeletion.map(blog => blog.title)
       assert(!titles.includes(blogToDelete.title))
+    })
+  })
+
+  describe('update of a blog', () => {
+    test('status code 200 if id is valid, likes is updated', async () => {
+      const blogsBeforeUpdate = await blogsInDb()
+      const blogToUpdate =  {
+        ...blogsBeforeUpdate[0],
+        likes: blogsBeforeUpdate[0].likes + 7
+      }
+
+      const returnedBlog = await api
+        .put(`/api/blogs/${blogToUpdate.id}`)
+        .send(blogToUpdate)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+      assert.strictEqual(returnedBlog.body.likes, blogsBeforeUpdate[0].likes + 7)
+    })
+    
+    test('status code 400 if id is invalid', async () => {
+      const invalidId = '5a3d5da59070081a82a3445'
+
+      const blogsBeforeUpdate = await blogsInDb()
+      const blogToUpdate =  {
+        ...blogsBeforeUpdate[0],
+        likes: blogsBeforeUpdate[0].likes + 7
+      }
+
+      await api
+        .put(`/api/blogs/${invalidId}`)
+        .send(blogToUpdate)
+        .expect(400)
     })
   })
 })
