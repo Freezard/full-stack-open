@@ -4,7 +4,7 @@ const Blog = require('../models/blog')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
-const { listWithSeveralBlogs } = require('./test_helper')
+const { listWithSeveralBlogs, blogsInDb } = require('./test_helper')
 
 const api = supertest(app)
 
@@ -26,7 +26,33 @@ test('the correct amount of blogs are returned as json', async () => {
 })
 
 test('the unique identifier property is named id', async () => {
-  const response = await api.get('/api/blogs')
+  const blogs = await blogsInDb()
+
+  assert(blogs.length > 0)
+  assert(blogs[0].id)
+})
+
+test('a valid blog can be added ', async () => {
+  const newBlog = {
+    title: 'New Blog Post',
+    author: 'Steven Mall',
+    url: 'https://www.thisisarandomurl.com',
+    likes: 50,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const blogs = await blogsInDb()
+  assert.strictEqual(blogs.length, listWithSeveralBlogs.length + 1)
+
+  const titles = blogs.map(blog => blog.title)
+  assert(titles.includes('New Blog Post'))
+})
+
 
   assert(response.body.length > 0)
   assert(response.body[0].id)
