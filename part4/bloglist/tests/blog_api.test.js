@@ -53,9 +53,20 @@ test('a valid blog can be added ', async () => {
   assert(titles.includes('New Blog Post'))
 })
 
+test('property likes will default to zero if missing', async () => {
+  const newBlog = {
+    title: 'New Blog Post',
+    author: 'Steven Mall',
+    url: 'https://www.thisisarandomurl.com',
+  }
 
-  assert(response.body.length > 0)
-  assert(response.body[0].id)
+  const blog = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  assert.strictEqual(blog.body.likes, 0)
 })
 
 after(async () => {
