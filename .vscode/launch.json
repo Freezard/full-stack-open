@@ -11,7 +11,12 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}\\part3\\phonebook\\index.js"
+            "program": "${workspaceFolder}/part4/bloglist/index.js",
+            "cwd": "${workspaceFolder}/part4/bloglist",
+            "env": {
+                "NODE_ENV": "test"
+              },
+            "console": "integratedTerminal"
         }
     ]
 }
