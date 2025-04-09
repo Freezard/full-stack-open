@@ -34,7 +34,7 @@ describe('when there are some blogs saved initially', () => {
     assert(blogs[0].id)
   })
 
-  describe('addition of a new blog', () => {
+  describe('addition of a new blog when logged in', () => {
     test('a valid blog can be added ', async () => {
       const newBlog = {
         title: 'New Blog Post',
@@ -45,6 +45,7 @@ describe('when there are some blogs saved initially', () => {
 
       await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${process.env.TEST_TOKEN}`)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -65,6 +66,7 @@ describe('when there are some blogs saved initially', () => {
 
       const returnedBlog = await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${process.env.TEST_TOKEN}`)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -81,6 +83,7 @@ describe('when there are some blogs saved initially', () => {
 
       await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${process.env.TEST_TOKEN}`)
         .send(newBlog)
         .expect(400)
 
@@ -92,18 +95,33 @@ describe('when there are some blogs saved initially', () => {
 
       await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${process.env.TEST_TOKEN}`)
         .send(newBlog)
         .expect(400)    
+    })
+
+    test('401 Unauthorized if token is missing', async () => {
+      let newBlog = {
+        author: 'Steven Mall',
+        url: 'https://www.thisisarandomurl.com',
+        likes: 50,
+      }
+
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(401)
     })
   })
 
   describe('deletion of a blog', () => {
-    test('succeeds with status code 204 if id is valid', async () => {
+    test('succeeds with status code 204 if id is valid and user is creator of blog', async () => {
       const blogsBeforeDeletion = await blogsInDb()
       const blogToDelete = blogsBeforeDeletion[0]
 
       await api
         .delete(`/api/blogs/${blogToDelete.id}`)
+        .set('Authorization', `Bearer ${process.env.TEST_TOKEN}`)
         .expect(204)
 
       const blogsAfterDeletion = await blogsInDb()
