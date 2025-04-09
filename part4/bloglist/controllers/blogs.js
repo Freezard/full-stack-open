@@ -44,6 +44,7 @@ blogsRouter.delete('/:id', middleware.userExtractor, async (request, response) =
     return response.status(401).json({ error: 'user not the creator of the blog' })
   }
 
+  // blog.deleteOne() is better
   await Blog.deleteOne(blog)
   response.status(204).end()
 })
