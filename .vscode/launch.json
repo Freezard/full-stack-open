@@ -11,8 +11,8 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/part4/bloglist/index.js",
-            "cwd": "${workspaceFolder}/part4/bloglist",
+            "program": "${workspaceFolder}/part5/bloglist-backend/index.js",
+            "cwd": "${workspaceFolder}/part5/bloglist-backend",
             "env": {
                 "NODE_ENV": "test"
               },
