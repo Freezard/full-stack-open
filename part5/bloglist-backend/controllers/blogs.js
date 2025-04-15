@@ -13,7 +13,9 @@ blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
   const body = request.body
 
   if (!body.title || !body.url) {
-    return response.status(400).end()
+    return response.status(400).json({
+      error: 'title and url is required'
+    })
   }
 
   const user = request.user

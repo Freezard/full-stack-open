@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import Blogs from './components/Blogs'
 import LoginForm from './components/LoginForm'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -9,15 +10,17 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const [notification, setNotification] = useState({ message: null, type: null })
   
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+    (async () => {
+      const blogs = await blogService.getAll()
+      setBlogs(blogs)
+    })()
   }, [])
 
   useEffect(() => {
@@ -29,22 +32,26 @@ const App = () => {
     }
   }, [])
 
-  const addBlog = (event) => {
+  const addBlog = async (event) => {
     event.preventDefault()
+
     const blogObject = {
       title,
       author,
       url
     }
-  
-    blogService
-      .create(blogObject)
-        .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))
-        setTitle('')
-        setAuthor('')
-        setUrl('')
-      })
+
+    try {  
+      const returnedBlog = await blogService.create(blogObject)
+      showNotification(
+        `New blog added: ${returnedBlog.title} by ${returnedBlog.author}`, 'success')
+      setBlogs(blogs.concat(returnedBlog))
+      setTitle('')
+      setAuthor('')
+      setUrl('')
+    } catch (error) {
+      showNotification(error.response.data.error, 'error')
+    }
   }
 
   const handleLogin = async (event) => {
@@ -61,8 +68,8 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-    } catch (exception) {
-      console.log(exception)
+    } catch (error) {
+      showNotification(error.response.data.error, 'error')
     }
   }
 
@@ -91,8 +98,16 @@ const App = () => {
     setUrl(event.target.value)
   }
 
+  const showNotification = (message, type, duration = 5000) => {
+    setNotification({ message, type })
+    setTimeout(() => {
+      setNotification({ message: null, type: null })
+    }, duration)
+  }
+
   return (
     <div>
+      <Notification message={notification.message} type={notification.type} />
       {user === null ?
         <LoginForm onSubmit={handleLogin} username={username} password={password}
         onChangeUser={handleUserChange} onChangePassword={handlePasswordChange}/> :
