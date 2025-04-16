@@ -15,6 +15,7 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [addBlogVisible, setAddBlogVisible] = useState(false)
 
   useEffect(() => {
     (async () => {
@@ -113,7 +114,8 @@ const App = () => {
         onChangeUser={handleUserChange} onChangePassword={handlePasswordChange}/> :
         <Blogs blogs={blogs} user={user} onHandleLogout={handleLogout} title={title}
           onChangeTitle={handleTitleChange} author={author} onChangeAuthor={handleAuthorChange}
-          url={url} onChangeUrl={handleUrlChange} onSubmit={addBlog} />
+          url={url} onChangeUrl={handleUrlChange} onSubmitNewBlog={addBlog}
+          addBlogVisible={addBlogVisible} setAddBlogVisible={setAddBlogVisible} />
       }
     </div>
   )
