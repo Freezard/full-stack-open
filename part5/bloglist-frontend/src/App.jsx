@@ -11,11 +11,6 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [notification, setNotification] = useState({ message: null, type: null })
-  
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
-  const [addBlogVisible, setAddBlogVisible] = useState(false)
 
   useEffect(() => {
     (async () => {
@@ -33,23 +28,12 @@ const App = () => {
     }
   }, [])
 
-  const addBlog = async (event) => {
-    event.preventDefault()
-
-    const blogObject = {
-      title,
-      author,
-      url
-    }
-
+  const addBlog = async (blogObject) => {
     try {  
       const returnedBlog = await blogService.create(blogObject)
       showNotification(
         `New blog added: ${returnedBlog.title} by ${returnedBlog.author}`, 'success')
       setBlogs(blogs.concat(returnedBlog))
-      setTitle('')
-      setAuthor('')
-      setUrl('')
     } catch (error) {
       showNotification(error.response.data.error, 'error')
     }
@@ -87,18 +71,6 @@ const App = () => {
     setPassword(event.target.value)
   }
 
-  const handleTitleChange = (event) => {
-    setTitle(event.target.value)
-  }
-
-  const handleAuthorChange = (event) => {
-    setAuthor(event.target.value)
-  }
-  
-  const handleUrlChange = (event) => {
-    setUrl(event.target.value)
-  }
-
   const showNotification = (message, type, duration = 5000) => {
     setNotification({ message, type })
     setTimeout(() => {
@@ -112,10 +84,7 @@ const App = () => {
       {user === null ?
         <LoginForm onSubmit={handleLogin} username={username} password={password}
         onChangeUser={handleUserChange} onChangePassword={handlePasswordChange}/> :
-        <Blogs blogs={blogs} user={user} onHandleLogout={handleLogout} title={title}
-          onChangeTitle={handleTitleChange} author={author} onChangeAuthor={handleAuthorChange}
-          url={url} onChangeUrl={handleUrlChange} onSubmitNewBlog={addBlog}
-          addBlogVisible={addBlogVisible} setAddBlogVisible={setAddBlogVisible} />
+        <Blogs blogs={blogs} user={user} onHandleLogout={handleLogout} createBlog={addBlog} />
       }
     </div>
   )

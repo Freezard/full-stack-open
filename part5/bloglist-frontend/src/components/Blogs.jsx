@@ -1,9 +1,11 @@
+import { useState } from 'react'
 import AddBlogForm from './AddBlogForm'
 import Blog from './Blog'
 
 const Blogs = (props) => {
-  const { blogs, user, onHandleLogout, onSubmitNewBlog, title, onChangeTitle,
-    author, onChangeAuthor, url, onChangeUrl, addBlogVisible, setAddBlogVisible } = props
+  const { blogs, user, onHandleLogout, createBlog} = props
+
+  const [addBlogVisible, setAddBlogVisible] = useState(false)
 
   const hideWhenVisible = { display: addBlogVisible ? 'none' : '' }
   const showWhenVisible = { display: addBlogVisible ? '' : 'none' }
@@ -17,8 +19,7 @@ const Blogs = (props) => {
         <button onClick={() => setAddBlogVisible(true)}>new blog</button>
       </div>
       <div style={showWhenVisible}>
-        <AddBlogForm title={title} onChangeTitle={onChangeTitle} author={author} onChangeAuthor={onChangeAuthor}
-          url={url} onChangeUrl={onChangeUrl} onSubmitNewBlog={onSubmitNewBlog} />
+        <AddBlogForm createBlog={createBlog} />
         <button onClick={() => setAddBlogVisible(false)}>cancel</button>
       </div>
       {blogs.map(blog =>
