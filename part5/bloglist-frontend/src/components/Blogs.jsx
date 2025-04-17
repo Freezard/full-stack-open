@@ -4,6 +4,7 @@ import Blog from './Blog'
 
 const Blogs = (props) => {
   const { blogs, user, onHandleLogout, createBlog, updateBlog } = props
+  const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
 
   const [addBlogVisible, setAddBlogVisible] = useState(false)
 
@@ -22,7 +23,7 @@ const Blogs = (props) => {
         <AddBlogForm createBlog={createBlog} />
         <button onClick={() => setAddBlogVisible(false)}>cancel</button>
       </div>
-      {blogs.map(blog =>
+      {sortedBlogs.map(blog =>
         <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
       )}
     </div>
