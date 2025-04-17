@@ -42,7 +42,8 @@ const App = () => {
   const updateBlog = async (blogObject) => {
     try {
       const returnedBlog = await blogService.update(blogObject.id, blogObject)
-      setBlogs(blogs.map(blog => blog.id === returnedBlog.id ? returnedBlog : blog))
+      setBlogs(blogs.map(blog => blog.id === returnedBlog.id
+        ? { ...returnedBlog, user: blog.user } : blog))
       showNotification(
         `Blog updated: ${returnedBlog.title} by ${returnedBlog.author}`, 'success')
     } catch (error) {
