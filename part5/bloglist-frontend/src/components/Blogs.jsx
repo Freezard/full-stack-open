@@ -3,7 +3,7 @@ import AddBlogForm from './AddBlogForm'
 import Blog from './Blog'
 
 const Blogs = (props) => {
-  const { blogs, user, onHandleLogout, createBlog} = props
+  const { blogs, user, onHandleLogout, createBlog, updateBlog } = props
 
   const [addBlogVisible, setAddBlogVisible] = useState(false)
 
@@ -23,7 +23,7 @@ const Blogs = (props) => {
         <button onClick={() => setAddBlogVisible(false)}>cancel</button>
       </div>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
       )}
     </div>
   )

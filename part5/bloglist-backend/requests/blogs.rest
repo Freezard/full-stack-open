@@ -8,11 +8,24 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1sd
 ###
 POST http://localhost:3003/api/blogs/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY3ZjUxNjEwYTIzMDAzNGUxMWZjNjIzYSIsImlhdCI6MTc0NDE0OTUwOX0.eIWWzXUv6SAVR0M-ocYu9bAEV0c5rBPYd2V3f5LU6qw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY3ZjViYTRiM2Q5NDg5NjZhODU0ZGZkMyIsImlhdCI6MTc0NDgyMjU4MX0.WcjJ249DwOwaFJenVvFF87tRBeq3iUqBvMoYbZLL7KM
 
 {
     "title": "My first blog",
     "author": "Dan Roswell",
     "url": "urlthis",
     "likes": 5
+}
+
+###
+PUT http://localhost:3003/api/blogs/67ffe13fda258230afbfbe44
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY3ZjViYTRiM2Q5NDg5NjZhODU0ZGZkMyIsImlhdCI6MTc0NDgyMjU4MX0.WcjJ249DwOwaFJenVvFF87tRBeq3iUqBvMoYbZLL7KM
+
+{
+    "title": "React patterns",
+    "author": "Michael Chan",
+    "url": "https://reactpatterns.com/",
+    "likes": 10,
+    "user": "67f5ba4b3d948966a854dfd3"
 }

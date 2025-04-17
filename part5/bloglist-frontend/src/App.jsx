@@ -29,11 +29,22 @@ const App = () => {
   }, [])
 
   const addBlog = async (blogObject) => {
-    try {  
+    try {
       const returnedBlog = await blogService.create(blogObject)
       showNotification(
         `New blog added: ${returnedBlog.title} by ${returnedBlog.author}`, 'success')
       setBlogs(blogs.concat(returnedBlog))
+    } catch (error) {
+      showNotification(error.response.data.error, 'error')
+    }
+  }
+
+  const updateBlog = async (blogObject) => {
+    try {
+      const returnedBlog = await blogService.update(blogObject.id, blogObject)
+      setBlogs(blogs.map(blog => blog.id === returnedBlog.id ? returnedBlog : blog))
+      showNotification(
+        `Blog updated: ${returnedBlog.title} by ${returnedBlog.author}`, 'success')
     } catch (error) {
       showNotification(error.response.data.error, 'error')
     }
@@ -84,7 +95,7 @@ const App = () => {
       {user === null ?
         <LoginForm onSubmit={handleLogin} username={username} password={password}
         onChangeUser={handleUserChange} onChangePassword={handlePasswordChange}/> :
-        <Blogs blogs={blogs} user={user} onHandleLogout={handleLogout} createBlog={addBlog} />
+        <Blogs blogs={blogs} user={user} onHandleLogout={handleLogout} createBlog={addBlog} updateBlog={updateBlog} />
       }
     </div>
   )

@@ -46,13 +46,28 @@ blogsRouter.delete('/:id', middleware.userExtractor, async (request, response) =
     return response.status(401).json({ error: 'user not the creator of the blog' })
   }
 
-  // blog.deleteOne() is better
-  await Blog.deleteOne(blog)
+  await blog.deleteOne()
   response.status(204).end()
 })
 
-blogsRouter.put('/:id', async (request, response) => {
-  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, request.body, { new: true })
+blogsRouter.put('/:id', middleware.userExtractor, async (request, response) => {
+  const body = request.body
+  const blog = await Blog.findById(request.params.id)
+
+  if (!blog) {
+    return response.status(400).end()
+  }
+
+  if (blog.user.toString() !== request.user.id.toString()) {
+    return response.status(401).json({ error: 'user not the creator of the blog' })
+  }
+
+  blog.title = body.title
+  blog.author = body.author
+  blog.url = body.url
+  blog.likes = body.likes
+  
+  const updatedBlog = await blog.save()
   response.status(200).json(updatedBlog)
 })
 
