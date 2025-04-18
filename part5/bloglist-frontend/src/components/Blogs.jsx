@@ -3,7 +3,7 @@ import AddBlogForm from './AddBlogForm'
 import Blog from './Blog'
 
 const Blogs = (props) => {
-  const { blogs, user, onHandleLogout, createBlog, updateBlog } = props
+  const { blogs, user, onHandleLogout, createBlog, updateBlog, deleteBlog } = props
   const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
 
   const [addBlogVisible, setAddBlogVisible] = useState(false)
@@ -24,7 +24,7 @@ const Blogs = (props) => {
         <button onClick={() => setAddBlogVisible(false)}>cancel</button>
       </div>
       {sortedBlogs.map(blog =>
-        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
+        <Blog key={blog.id} blog={blog} user={user} updateBlog={updateBlog} deleteBlog={deleteBlog} />
       )}
     </div>
   )
