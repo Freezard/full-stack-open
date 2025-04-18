@@ -58,10 +58,6 @@ blogsRouter.put('/:id', middleware.userExtractor, async (request, response) => {
     return response.status(400).end()
   }
 
-  if (blog.user.toString() !== request.user.id.toString()) {
-    return response.status(401).json({ error: 'user not the creator of the blog' })
-  }
-
   blog.title = body.title
   blog.author = body.author
   blog.url = body.url
