@@ -71,7 +71,7 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    
+
     try {
       const user = await loginService.login({
         username, password,
@@ -114,7 +114,7 @@ const App = () => {
       <Notification message={notification.message} type={notification.type} />
       {user === null ?
         <LoginForm onSubmit={handleLogin} username={username} password={password}
-        onChangeUser={handleUserChange} onChangePassword={handlePasswordChange}/> :
+          onChangeUser={handleUserChange} onChangePassword={handlePasswordChange}/> :
         <Blogs blogs={blogs} user={user} onHandleLogout={handleLogout} createBlog={addBlog}
           updateBlog={updateBlog} deleteBlog={deleteBlog} />
       }

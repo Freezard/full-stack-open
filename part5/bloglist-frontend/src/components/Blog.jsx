@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Blog = ({blog, user, updateBlog, deleteBlog}) => {
+const Blog = ({ blog, user, updateBlog, deleteBlog }) => {
   const [showInfoVisible, setShowInfoVisible] = useState(false)
 
   const likeBlog = (blog) => {
@@ -16,7 +16,7 @@ const Blog = ({blog, user, updateBlog, deleteBlog}) => {
       deleteBlog(blog)
     }
   }
-  
+
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -49,7 +49,7 @@ const Blog = ({blog, user, updateBlog, deleteBlog}) => {
         <button style={deleteButtonStyle} onClick={() => handleDeleteBlog(blog)}>remove</button>
         }
       </div>
-  </div>
-)}
+    </div>
+  )}
 
 export default Blog

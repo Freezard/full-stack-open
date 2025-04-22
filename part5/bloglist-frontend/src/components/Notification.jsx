@@ -5,15 +5,15 @@ const Notification = ({ message, type }) => {
 
   const styles = {
     base: {
-      background: "lightgrey",
+      background: 'lightgrey',
       fontSize: 20,
-      borderStyle: "solid",
+      borderStyle: 'solid',
       borderRadius: 5,
       padding: 10,
       marginBottom: 10,
     },
-    success: { color: "green" },
-    error: { color: "red" },
+    success: { color: 'green' },
+    error: { color: 'red' },
   }
 
   return (
