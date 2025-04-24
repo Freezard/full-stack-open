@@ -1,7 +1,8 @@
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 
-test('renders content', () => {
+test('renders content', async () => {
   const blog = {
     title: 'My first blog',
     author: 'Dan Roswell',
@@ -10,11 +11,13 @@ test('renders content', () => {
     user: '67f5ba4b3d948966a854dfd3'
   }
 
-  const user = {
+  const blogUser = {
     id: '67f5ba4b3d948966a854dfd3'
   }
 
-  const { container } = render(<Blog blog={blog} user={user} />)
+  const mockHandler = vi.fn()
+
+  let { container } = render(<Blog blog={blog} user={blogUser} updateBlog={mockHandler} />)
 
   let div = container.querySelector('.blogDefault')
   expect(div).toHaveTextContent('My first blog')
@@ -25,4 +28,11 @@ test('renders content', () => {
   div = container.querySelector('.blogExpanded')
   expect(div).toHaveTextContent('urlthis')
   expect(div).toHaveTextContent('5')
+
+  const user = userEvent.setup()
+  const button = screen.getByText('like')
+  await user.click(button)
+  await user.click(button)
+
+  expect(mockHandler.mock.calls).toHaveLength(2)
 })
