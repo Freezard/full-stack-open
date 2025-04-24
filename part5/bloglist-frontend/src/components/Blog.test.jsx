@@ -16,10 +16,13 @@ test('renders content', () => {
 
   const { container } = render(<Blog blog={blog} user={user} />)
 
-  const div = container.querySelector('.blog')
-  
+  let div = container.querySelector('.blogDefault')
   expect(div).toHaveTextContent('My first blog')
   expect(div).toHaveTextContent('Dan Roswell')
   expect(div).not.toHaveTextContent('urlthis')
   expect(div).not.toHaveTextContent('5')
+
+  div = container.querySelector('.blogExpanded')
+  expect(div).toHaveTextContent('urlthis')
+  expect(div).toHaveTextContent('5')
 })
