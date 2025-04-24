@@ -38,7 +38,7 @@ describe('<Blog />', () => {
     expect(div).toHaveTextContent('5')
   })
 
-  test('clicking like button twice will call the updateLike function twice', async () => {
+  test('clicking like button twice will call the likeBlog function twice', async () => {
     const user = userEvent.setup()
     const button = screen.getByText('like')
     await user.click(button)
