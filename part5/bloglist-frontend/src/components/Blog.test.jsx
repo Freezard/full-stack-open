@@ -2,7 +2,8 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 
-test('renders content', async () => {
+describe('<Blog />', () => {
+  let container
   const blog = {
     title: 'My first blog',
     author: 'Dan Roswell',
@@ -17,22 +18,32 @@ test('renders content', async () => {
 
   const mockHandler = vi.fn()
 
-  let { container } = render(<Blog blog={blog} user={blogUser} updateBlog={mockHandler} />)
+  beforeEach(() => {
+    container = render(<Blog blog={blog} user={blogUser} updateBlog={mockHandler} />).container
+  })
 
-  let div = container.querySelector('.blogDefault')
-  expect(div).toHaveTextContent('My first blog')
-  expect(div).toHaveTextContent('Dan Roswell')
-  expect(div).not.toHaveTextContent('urlthis')
-  expect(div).not.toHaveTextContent('5')
+  test('renders default content', async () => {
+    const div = container.querySelector('.blogDefault')
 
-  div = container.querySelector('.blogExpanded')
-  expect(div).toHaveTextContent('urlthis')
-  expect(div).toHaveTextContent('5')
+    expect(div).toHaveTextContent('My first blog')
+    expect(div).toHaveTextContent('Dan Roswell')
+    expect(div).not.toHaveTextContent('urlthis')
+    expect(div).not.toHaveTextContent('5')
+  })
 
-  const user = userEvent.setup()
-  const button = screen.getByText('like')
-  await user.click(button)
-  await user.click(button)
+  test('renders expanded content', async () => {
+    const div = container.querySelector('.blogExpanded')
 
-  expect(mockHandler.mock.calls).toHaveLength(2)
+    expect(div).toHaveTextContent('urlthis')
+    expect(div).toHaveTextContent('5')
+  })
+
+  test('clicking like button twice will call the updateLike function twice', async () => {
+    const user = userEvent.setup()
+    const button = screen.getByText('like')
+    await user.click(button)
+    await user.click(button)
+
+    expect(mockHandler.mock.calls).toHaveLength(2)
+  })
 })
