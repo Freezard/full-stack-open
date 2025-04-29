@@ -1,9 +1,10 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
+const { loginWith, createBlog } = require('./helper')
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
-    await request.post('http://localhost:3003/api/testing/reset')
-    await request.post('http://localhost:3003/api/users', {
+    await request.post('/api/testing/reset')
+    await request.post('/api/users', {
       data: {
         name: 'Matti Luukkainen',
         username: 'mluukkai',
@@ -11,7 +12,7 @@ describe('Blog app', () => {
       }
     })
 
-    await page.goto('http://localhost:5173')
+    await page.goto('/')
   })
 
   test('Login form is shown', async ({ page }) => {
@@ -21,17 +22,12 @@ describe('Blog app', () => {
 
   describe('Login', () => {
     test('succeeds with correct credentials', async ({ page }) => {
-      await page.getByTestId('username').fill('mluukkai')
-      await page.getByTestId('password').fill('salainen')
-      await page.getByRole('button', { name: 'login' }).click()
-
+      await loginWith(page, 'mluukkai', 'salainen')
       await expect(page.getByText('Matti Luukkainen logged-in')).toBeVisible()
     })
 
     test('fails with wrong credentials', async ({ page }) => {
-      await page.getByTestId('username').fill('mluukkai')
-      await page.getByTestId('password').fill('wrong')
-      await page.getByRole('button', { name: 'login' }).click()
+      await loginWith(page, 'mluukkai', 'wrong')
 
       const notificationDiv = page.locator('.notification')
       await expect(notificationDiv).toContainText('invalid username or password')
@@ -43,19 +39,29 @@ describe('Blog app', () => {
 
   describe('When logged in', () => {
     beforeEach(async ({ page }) => {
-      await page.getByTestId('username').fill('mluukkai')
-      await page.getByTestId('password').fill('salainen')
-      await page.getByRole('button', { name: 'login' }).click()
+      await loginWith(page, 'mluukkai', 'salainen')
     })
 
     test('a new blog can be created', async ({ page }) => {
-      await page.getByRole('button', { name: 'new blog' }).click()
-      await page.getByPlaceholder('Title').fill('My first blog')
-      await page.getByPlaceholder('Author').fill('Dan Roswell')
-      await page.getByPlaceholder('URL').fill('urlthis')
-      await page.getByRole('button', { name: 'create' }).click()
+      await createBlog(page, 'My first blog', 'Dan Roswell', 'urlthis')
+
       await expect(page.locator('.notification'))
         .toContainText('New blog added: My first blog by Dan Roswell')
+      await expect(page.locator('.blogDefault').first())
+        .toContainText('My first blog Dan Roswell')
+    })
+
+    describe('When a new blog has been created', () => {
+      beforeEach(async ({ page }) => {
+        await createBlog(page, 'My first blog', 'Dan Roswell', 'urlthis')
+      })
+
+      test('the blog can be liked', async ({ page }) => {
+        await page.getByRole('button', { name: 'view' }).click()
+        await expect(page.getByText('likes 0')).toBeVisible()
+        await page.getByRole('button', { name: 'like' }).click()
+        await expect(page.getByText('likes 1')).toBeVisible()
+      })
     })
   })
 })
