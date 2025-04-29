@@ -17,7 +17,7 @@ const Notification = ({ message, type }) => {
   }
 
   return (
-    <div style={{ ...styles.base, ...styles[type] }}>
+    <div className="notification" style={{ ...styles.base, ...styles[type] }}>
       {message}
     </div>
   )
