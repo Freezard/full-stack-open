@@ -11,6 +11,13 @@ describe('Blog app', () => {
         password: 'salainen'
       }
     })
+    await request.post('/api/users', {
+      data: {
+        name: 'Root',
+        username: 'root',
+        password: 'sekret'
+      }
+    })
 
     await page.goto('/')
   })
@@ -75,6 +82,14 @@ describe('Blog app', () => {
 
         await expect(page.locator('.notification'))
         .toContainText('Blog deleted: My first blog by Dan Roswell')
+      })
+
+      test('the blog cannot be deleted by another user', async ({ page }) => {
+        await page.getByRole('button', { name: 'logout' }).click()
+        await loginWith(page, 'root', 'sekret')
+
+        await page.getByRole('button', { name: 'view' }).click()
+        await expect(page.getByRole('button', { name: 'remove' })).toHaveCount(0)
       })
     })
   })
