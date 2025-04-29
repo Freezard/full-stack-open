@@ -1,5 +1,5 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
-const { loginWith, createBlog } = require('./helper')
+const { loginWith, createBlog, likeBlog } = require('./helper')
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
@@ -90,6 +90,32 @@ describe('Blog app', () => {
 
         await page.getByRole('button', { name: 'view' }).click()
         await expect(page.getByRole('button', { name: 'remove' })).toHaveCount(0)
+      })
+    })
+
+    describe('When multiple blogs have been created', () => {
+      beforeEach(async ({ page }) => {
+        await createBlog(page, 'My first blog', 'Dan Roswell', 'urlthis')
+        await createBlog(page, 'My second blog', 'Astrid Roswell', 'thisurl')
+        await createBlog(page, 'My third blog', 'Mark Roswell', 'thaturl')
+      })
+
+      test('blogs are ordered by likes', async ({ page }) => {
+        // Expand all blogs
+        const blogsDefault = page.locator('.blogDefault')
+        await blogsDefault.nth(0).getByRole('button', { name: 'view' }).click()
+        await blogsDefault.nth(1).getByRole('button', { name: 'view' }).click()
+        await blogsDefault.nth(2).getByRole('button', { name: 'view' }).click()
+
+        await likeBlog(page, 'My first blog', 1)
+        await likeBlog(page, 'My second blog', 3)
+        await likeBlog(page, 'My third blog', 2)
+
+        // Order from top should be: blog 2, blog 3, blog 1
+        const orderedBlogs = page.locator('.blogExpanded')
+        await expect(orderedBlogs.nth(0)).toContainText('My second blog')
+        await expect(orderedBlogs.nth(1)).toContainText('My third blog')
+        await expect(orderedBlogs.nth(2)).toContainText('My first blog')
       })
     })
   })

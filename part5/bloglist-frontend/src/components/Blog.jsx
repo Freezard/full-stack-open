@@ -43,7 +43,8 @@ const Blog = ({ blog, user, updateBlog, deleteBlog }) => {
       <div className='blogExpanded' style={showWhenVisible}>
         {blog.title} {blog.author} <button onClick={() => setShowInfoVisible(false)}>hide</button><br />
         {blog.url}<br />
-        likes {blog.likes} <button onClick={() => likeBlog(blog)}>like</button><br />
+        <span data-testid="likes">likes {blog.likes}</span>{' '}
+        <button onClick={() => likeBlog(blog)}>like</button><br />
         {blog.user.name}<br />
         {user.id === blog.user.id &&
         <button style={deleteButtonStyle} onClick={() => handleDeleteBlog(blog)}>remove</button>
