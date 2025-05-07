@@ -1,11 +1,11 @@
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
-import { selectSortedAnecdotes } from '../reducers/selectors'
+import { selectFilteredSortedAnecdotes } from '../reducers/selectors'
 import { voteOn } from '../reducers/anecdoteReducer'
 
-const AnecdoteForm = () => {
+const AnecdoteList = () => {
   const dispatch = useDispatch()
-  const anecdotes = useSelector(selectSortedAnecdotes)
+  const anecdotes = useSelector(selectFilteredSortedAnecdotes)
 
   const vote = (id) => {
     dispatch(voteOn(id))
@@ -28,4 +28,4 @@ const AnecdoteForm = () => {
   )
 }
 
-export default AnecdoteForm
+export default AnecdoteList

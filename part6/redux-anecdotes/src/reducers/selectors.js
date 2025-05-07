@@ -1,8 +1,21 @@
 import { createSelector } from 'reselect'
 
-const selectAnecdotes = state => state
+const selectAnecdotes = state => state.anecdotes
+const selectFilter = state => state.filter
 
-export const selectSortedAnecdotes = createSelector(
-  [selectAnecdotes],
-  anecdotes => [...anecdotes].sort((a, b) => b.votes - a.votes)
+const filterAnecdotes = (anecdotes, filter) => {
+  const lower = filter.toLowerCase()
+  return anecdotes.filter(a => a.content.toLowerCase().includes(lower))
+}
+
+const sortAnecdotes = (anecdotes) => {
+  return [...anecdotes].sort((a, b) => b.votes - a.votes)
+}
+
+export const selectFilteredSortedAnecdotes = createSelector(
+  [selectAnecdotes, selectFilter],
+  (anecdotes, filter) => {
+    const filtered = filterAnecdotes(anecdotes, filter)
+    return sortAnecdotes(filtered)
+  }
 )
