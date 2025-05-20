@@ -1,14 +1,18 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { updateAnecdote } from '../requests'
-import PropTypes from 'prop-types'
 
-const AnecdoteList = ({ anecdotes }) => {
+const AnecdoteList = () => {
   const queryClient = useQueryClient()
+  const anecdotes = queryClient.getQueryData(['anecdotes'])
 
   const updateAnecdoteMutation = useMutation({
     mutationFn: updateAnecdote,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['anecdotes'] })
+    onSuccess: (updatedAnecdote) => {
+      const anecdotes = queryClient.getQueryData(['anecdotes'])
+      const updatedAnecotes = anecdotes.map(anecdote =>
+        anecdote.id !== updatedAnecdote.id ? anecdote : updatedAnecdote
+      )
+      queryClient.setQueryData(['anecdotes'], updatedAnecotes)
     }
   })
 
@@ -31,10 +35,6 @@ const AnecdoteList = ({ anecdotes }) => {
       )}
     </div>
   )
-}
-
-AnecdoteList.propTypes = {
-  anecdotes: PropTypes.array.isRequired
 }
 
 export default AnecdoteList

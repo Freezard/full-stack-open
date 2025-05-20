@@ -8,7 +8,8 @@ const App = () => {
   const { isLoading, isError, data } = useQuery({
     queryKey: ['anecdotes'],
     queryFn: () => getAnecdotes(),
-    retry: false
+    retry: false,
+    refetchOnWindowFocus: false
   })
 
   if (isLoading) {
@@ -27,7 +28,7 @@ const App = () => {
     
       <Notification />
       <AnecdoteForm />
-      <AnecdoteList anecdotes={anecdotes} />
+      <AnecdoteList />
     </div>
   )
 }
