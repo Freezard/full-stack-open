@@ -25,7 +25,7 @@ export const NotificationContextProvider = (props) => {
 
 export const useNotificationValue = () => {
   const notificationAndDispatch = useContext(NotificationContext)
-  return useContext(NotificationContext)[0]
+  return notificationAndDispatch[0]
 }
 
 export const useNotificationDispatch = () => {

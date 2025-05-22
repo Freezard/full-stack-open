@@ -5,7 +5,7 @@ import AnecdoteList from './components/AnecdoteList'
 import Notification from './components/Notification'
 
 const App = () => {
-  const { isLoading, isError, data } = useQuery({
+  const { isLoading, isError } = useQuery({
     queryKey: ['anecdotes'],
     queryFn: () => getAnecdotes(),
     retry: false,
@@ -19,8 +19,6 @@ const App = () => {
   if (isError) {
     return <span>anecdote service not available due to problems in server</span>
   }
-
-  const anecdotes = data
 
   return (
     <div>
