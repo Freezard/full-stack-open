@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query'
 import { useState, useEffect } from 'react'
 import Blogs from './components/Blogs'
 import LoginForm from './components/LoginForm'
@@ -98,6 +99,21 @@ const App = () => {
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value)
+  }
+
+  const { isLoading, isError } = useQuery({
+    queryKey: ['blogs'],
+    queryFn: blogService.getAll,
+    retry: false,
+    refetchOnWindowFocus: false
+  })
+
+  if (isLoading) {
+    return <span>loading data...</span>
+  }
+
+  if (isError) {
+    return <span>anecdote service not available due to problems in server</span>
   }
 
   return (

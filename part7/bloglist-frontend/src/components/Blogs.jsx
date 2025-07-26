@@ -1,9 +1,12 @@
+import { useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import AddBlogForm from './AddBlogForm'
 import Blog from './Blog'
 
 const Blogs = (props) => {
-  const { blogs, user, onHandleLogout, createBlog, updateBlog, deleteBlog } = props
+  const queryClient = useQueryClient()
+  const blogs = queryClient.getQueryData(['blogs'])
+  const { user, onHandleLogout, createBlog, updateBlog, deleteBlog } = props
   const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
 
   const [addBlogVisible, setAddBlogVisible] = useState(false)
