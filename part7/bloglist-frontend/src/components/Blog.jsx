@@ -1,19 +1,49 @@
 import { useState } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useSetNotification } from '../NotificationContext'
+import blogService from '../services/blogs'
 
-const Blog = ({ blog, user, updateBlog, deleteBlog }) => {
+const Blog = ({ blog, user }) => {
   const [showInfoVisible, setShowInfoVisible] = useState(false)
+  const queryClient = useQueryClient()
+  const setNotification = useSetNotification()
+
+  const updateBlogMutation = useMutation({
+    mutationFn: blogService.update,
+    onSuccess: (updatedBlog) => {
+      const blogs = queryClient.getQueryData(['blogs'])
+      const updatedBlogs = blogs.map(blog =>
+        blog.id !== updatedBlog.id ? blog : { ...updatedBlog, user: blog.user }
+      )
+      queryClient.setQueryData(['blogs'], updatedBlogs)
+
+      setNotification(`Blog updated: ${updatedBlog.title} by ${updatedBlog.author}`)
+    },
+    onError: (error) => {
+      setNotification(error.response.data.error, 'error')
+    }
+  })
+
+  const deleteBlogMutation = useMutation({
+    mutationFn: blogService.remove,
+    onSuccess: () => {
+      const blogs = queryClient.getQueryData(['blogs'])
+      queryClient.setQueryData(['blogs'], blogs.filter(b => b.id !== blog.id))
+
+      setNotification(`Blog deleted: ${blog.title} by ${blog.author}`)
+    },
+    onError: (error) => {
+      setNotification(error.response.data.error, 'error')
+    }
+  })
 
   const likeBlog = (blog) => {
-    updateBlog({
-      ...blog,
-      user: blog.user.id,
-      likes: blog.likes + 1
-    })
+    updateBlogMutation.mutate({ ...blog, likes: blog.likes + 1 })
   }
 
   const handleDeleteBlog = (blog) => {
     if (window.confirm(`Remove ${blog.title} by ${blog.author}?`)) {
-      deleteBlog(blog)
+      deleteBlogMutation.mutate(blog.id)
     }
   }
 

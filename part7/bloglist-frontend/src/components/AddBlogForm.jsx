@@ -3,7 +3,7 @@ import { useSetNotification } from '../NotificationContext'
 import { useState } from 'react'
 import blogService from '../services/blogs'
 
-const AddBlogForm = () => {
+const AddBlogForm = ({ user }) => {
   const queryClient = useQueryClient()
   const setNotification = useSetNotification()
 
@@ -15,7 +15,14 @@ const AddBlogForm = () => {
     mutationFn: blogService.create,
     onSuccess: (newBlog) => {
       const blogs = queryClient.getQueryData(['blogs'])
-      queryClient.setQueryData(['blogs'], blogs.concat(newBlog))
+      queryClient.setQueryData(['blogs'], blogs.concat({
+        ...newBlog,
+        user: {
+          id: user.id,
+          username: user.username,
+          name: user.name
+        }
+      }))
 
       setNotification(`Blog created: ${newBlog.title} by ${newBlog.author}`)
     },

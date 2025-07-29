@@ -8,7 +8,6 @@ import loginService from './services/login'
 import { useSetNotification } from './NotificationContext'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -22,51 +21,6 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
-
-  useEffect(() => {
-    (async () => {
-      const blogs = await blogService.getAll()
-      setBlogs(blogs)
-    })()
-  }, [])
-
-  const addBlog = async (blogObject) => {
-    try {
-      const returnedBlog = await blogService.create(blogObject)
-      setNotification(`New blog added: ${returnedBlog.title} by ${returnedBlog.author}`)
-      setBlogs(blogs.concat({
-        ...returnedBlog,
-        user: {
-          id: user.id,
-          username: user.username,
-          name: user.name
-        }
-      }))
-    } catch (error) {
-      setNotification(error.response.data.error, 'error')
-    }
-  }
-
-  const updateBlog = async (blogObject) => {
-    try {
-      const returnedBlog = await blogService.update(blogObject.id, blogObject)
-      setBlogs(blogs.map(blog => blog.id === returnedBlog.id
-        ? { ...returnedBlog, user: blog.user } : blog))
-      setNotification(`Blog updated: ${returnedBlog.title} by ${returnedBlog.author}`)
-    } catch (error) {
-      setNotification(error.response.data.error, 'error')
-    }
-  }
-
-  const deleteBlog = async (blogObject) => {
-    try {
-      await blogService.remove(blogObject.id)
-      setNotification(`Blog deleted: ${blogObject.title} by ${blogObject.author}`)
-      setBlogs(blogs.filter(blog => blog.id !== blogObject.id))
-    } catch (error) {
-      setNotification(error.response.data.error, 'error')
-    }
-  }
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -121,9 +75,8 @@ const App = () => {
       <Notification />
       {user === null ?
         <LoginForm onSubmit={handleLogin} username={username} password={password}
-          onChangeUser={handleUserChange} onChangePassword={handlePasswordChange}/> :
-        <Blogs blogs={blogs} user={user} onHandleLogout={handleLogout} createBlog={addBlog}
-          updateBlog={updateBlog} deleteBlog={deleteBlog} />
+          onChangeUser={handleUserChange} onChangePassword={handlePasswordChange} /> :
+        <Blogs user={user} onHandleLogout={handleLogout} />
       }
     </div>
   )

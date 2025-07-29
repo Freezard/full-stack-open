@@ -6,7 +6,7 @@ import Blog from './Blog'
 const Blogs = (props) => {
   const queryClient = useQueryClient()
   const blogs = queryClient.getQueryData(['blogs'])
-  const { user, onHandleLogout, createBlog, updateBlog, deleteBlog } = props
+  const { user, onHandleLogout } = props
   const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
 
   const [addBlogVisible, setAddBlogVisible] = useState(false)
@@ -23,11 +23,11 @@ const Blogs = (props) => {
         <button onClick={() => setAddBlogVisible(true)}>new blog</button>
       </div>
       <div style={showWhenVisible}>
-        <AddBlogForm createBlog={createBlog} />
+        <AddBlogForm user={user} />
         <button onClick={() => setAddBlogVisible(false)}>cancel</button>
       </div>
       {sortedBlogs.map(blog =>
-        <Blog key={blog.id} blog={blog} user={user} updateBlog={updateBlog} deleteBlog={deleteBlog} />
+        <Blog key={blog.id} blog={blog} user={user} />
       )}
     </div>
   )
