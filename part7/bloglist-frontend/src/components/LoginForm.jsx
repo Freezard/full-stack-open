@@ -10,7 +10,6 @@ const LoginForm = () => {
     event.preventDefault()
 
     await login({ username, password })
-    setUsername('')
     setPassword('')
   }
 

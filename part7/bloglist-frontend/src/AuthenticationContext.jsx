@@ -1,6 +1,7 @@
 import { createContext, useReducer, useContext, useEffect } from 'react'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import { useSetNotification } from './NotificationContext'
 
 const authenticationReducer = (state, action) => {
   switch (action.type) {
@@ -47,12 +48,17 @@ export const useAuthenticationDispatch = () => {
 
 export const useLogin = () => {
   const dispatch = useAuthenticationDispatch()
+  const setNotification = useSetNotification()
 
   return async ({ username, password }) => {
-    const user = await loginService.login({ username, password })
-    window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
-    blogService.setToken(user.token)
-    dispatch({ type: 'LOGIN', payload: user })
+    try {
+      const user = await loginService.login({ username, password })
+      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
+      blogService.setToken(user.token)
+      dispatch({ type: 'LOGIN', payload: user })
+    } catch (error) {
+      setNotification(error.response.data.error, 'error')
+    }
   }
 }
 
