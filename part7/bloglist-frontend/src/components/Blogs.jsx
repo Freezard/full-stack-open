@@ -1,17 +1,31 @@
-import { useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import AddBlogForm from './AddBlogForm'
 import Blog from './Blog'
 import { useAuthenticationValue, useLogout } from '../AuthenticationContext'
+import blogService from '../services/blogs'
 
 const Blogs = () => {
-  const queryClient = useQueryClient()
-  const logout = useLogout()
   const user = useAuthenticationValue()
-  const blogs = queryClient.getQueryData(['blogs'])
-  const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
-
+  const logout = useLogout()
   const [addBlogVisible, setAddBlogVisible] = useState(false)
+
+  const { data: blogs, isLoading, isError } = useQuery({
+    queryKey: ['blogs'],
+    queryFn: blogService.getAll,
+    retry: false,
+    refetchOnWindowFocus: false
+  })
+
+  if (isLoading) {
+    return <span>loading data...</span>
+  }
+
+  if (isError) {
+    return <span>blog service not available due to problems in server</span>
+  }
+
+  const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
 
   const hideWhenVisible = { display: addBlogVisible ? 'none' : '' }
   const showWhenVisible = { display: addBlogVisible ? '' : 'none' }
