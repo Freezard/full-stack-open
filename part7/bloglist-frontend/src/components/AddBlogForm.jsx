@@ -2,9 +2,11 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useSetNotification } from '../NotificationContext'
 import { useState } from 'react'
 import blogService from '../services/blogs'
+import { useAuthenticationValue } from '../AuthenticationContext'
 
-const AddBlogForm = ({ user }) => {
+const AddBlogForm = () => {
   const queryClient = useQueryClient()
+  const user = useAuthenticationValue()
   const setNotification = useSetNotification()
 
   const [title, setTitle] = useState('')

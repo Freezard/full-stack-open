@@ -2,11 +2,13 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import AddBlogForm from './AddBlogForm'
 import Blog from './Blog'
+import { useAuthenticationValue, useLogout } from '../AuthenticationContext'
 
-const Blogs = (props) => {
+const Blogs = () => {
   const queryClient = useQueryClient()
+  const logout = useLogout()
+  const user = useAuthenticationValue()
   const blogs = queryClient.getQueryData(['blogs'])
-  const { user, onHandleLogout } = props
   const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
 
   const [addBlogVisible, setAddBlogVisible] = useState(false)
@@ -18,7 +20,7 @@ const Blogs = (props) => {
     <div>
       <h2>blogs</h2>
       <p>{user.name} logged-in
-        <button onClick={onHandleLogout}>logout</button></p>
+        <button onClick={logout}>logout</button></p>
       <div style={hideWhenVisible}>
         <button onClick={() => setAddBlogVisible(true)}>new blog</button>
       </div>
