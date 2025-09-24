@@ -1,10 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
 import userService from '../services/users'
 import { useAuthenticationValue, useLogout } from '../AuthenticationContext'
-import { Link } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
-const Users = () => {
-  const user = useAuthenticationValue()
+const User = () => {
+  const id = useParams().id
+  const loggedInUser = useAuthenticationValue()
   const logout = useLogout()
 
   const { data: users, isLoading, isError } = useQuery({
@@ -13,6 +14,12 @@ const Users = () => {
     retry: false,
     refetchOnWindowFocus: false
   })
+
+  if (!users) {
+    return null
+  }
+
+  const user = users.find(u => u.id === id)
 
   if (isLoading) {
     return <span>loading data...</span>
@@ -24,25 +31,17 @@ const Users = () => {
 
   return (
     <div>
-      <h2>Users</h2>
-      <p>{user.name} logged-in
+      <h2>{user.name}</h2>
+      <p>{loggedInUser.name} logged-in
         <button onClick={logout}>logout</button></p>
-      <table>
-        <tbody>
-          <tr>
-            <td></td>
-            <td><b>blogs created</b></td>
-          </tr>
-          {users.map(user =>
-            <tr key={user.id}>
-              <td><Link to={`/users/${user.id}`}>{user.name}</Link></td>
-              <td>{user.blogs.length}</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+      <h3>added blogs</h3>
+      <ul>
+        {user.blogs.map(blog =>
+          <li key={blog.id}>{blog.title}</li>
+        )}
+      </ul>
     </div>
   )
 }
 
-export default Users
+export default User
