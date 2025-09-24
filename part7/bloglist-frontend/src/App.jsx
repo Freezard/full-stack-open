@@ -1,4 +1,5 @@
 import Blogs from './components/Blogs'
+import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import Users from './components/Users'
@@ -20,6 +21,7 @@ const App = () => {
         ) : (
           <>
             <Route path="/" element={<Blogs />} />
+            <Route path="/blogs/:id" element={<Blog />} />
             <Route path="/users" element={<Users />} />
             <Route path="/users/:id" element={<User />} />
           </>
