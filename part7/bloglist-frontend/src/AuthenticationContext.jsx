@@ -2,6 +2,9 @@ import { createContext, useReducer, useContext, useEffect } from 'react'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import { useSetNotification } from './NotificationContext'
+import {
+  useNavigate, useLocation
+} from 'react-router-dom'
 
 const authenticationReducer = (state, action) => {
   switch (action.type) {
@@ -17,17 +20,18 @@ const authenticationReducer = (state, action) => {
 const AuthenticationContext = createContext()
 
 export const AuthenticationContextProvider = (props) => {
-  const [user, userDispatch] = useReducer(authenticationReducer, null)
+  const initialUser = (() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+    return loggedUserJSON ? JSON.parse(loggedUserJSON) : null
+  })()
+
+  const [user, userDispatch] = useReducer(authenticationReducer, initialUser)
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
-
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      userDispatch({ type: 'LOGIN', payload: user })
+    if (user) {
       blogService.setToken(user.token)
     }
-  }, [])
+  }, [user])
 
   return (
     <AuthenticationContext.Provider value={[user, userDispatch] }>
@@ -49,6 +53,8 @@ export const useAuthenticationDispatch = () => {
 export const useLogin = () => {
   const dispatch = useAuthenticationDispatch()
   const setNotification = useSetNotification()
+  const navigate = useNavigate()
+  const location = useLocation()
 
   return async ({ username, password }) => {
     try {
@@ -56,6 +62,9 @@ export const useLogin = () => {
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       blogService.setToken(user.token)
       dispatch({ type: 'LOGIN', payload: user })
+
+      const redirectTo = location.state?.from || '/'
+      navigate(redirectTo, { replace: true })
     } catch (error) {
       setNotification(error.response.data.error, 'error')
     }
@@ -68,6 +77,7 @@ export const useLogout = () => {
   return () => {
     dispatch({ type: 'LOGOUT' })
     window.localStorage.removeItem('loggedBlogappUser')
+    blogService.setToken(null)
   }
 }
 

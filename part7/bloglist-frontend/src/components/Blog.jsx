@@ -82,7 +82,7 @@ const Blog = () => {
       <span data-testid="likes">{blog.likes} likes</span>{' '}
       <button onClick={() => likeBlog(blog)}>like</button><br />
       added by {blog.user.name}<br />
-      {user.id === blog.user.id &&
+      {user?.id === blog.user.id &&
       <button style={deleteButtonStyle} onClick={() => handleDeleteBlog(blog)}>remove</button>
       }
     </div>

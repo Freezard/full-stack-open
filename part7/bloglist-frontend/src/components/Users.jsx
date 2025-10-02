@@ -1,12 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
 import userService from '../services/users'
-import { useAuthenticationValue, useLogout } from '../AuthenticationContext'
 import { Link } from 'react-router-dom'
 
 const Users = () => {
-  const user = useAuthenticationValue()
-  const logout = useLogout()
-
   const { data: users, isLoading, isError } = useQuery({
     queryKey: ['users'],
     queryFn: userService.getAll,
@@ -25,8 +21,6 @@ const Users = () => {
   return (
     <div>
       <h2>Users</h2>
-      <p>{user.name} logged-in
-        <button onClick={logout}>logout</button></p>
       <table>
         <tbody>
           <tr>

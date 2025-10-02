@@ -1,13 +1,12 @@
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import AddBlogForm from './AddBlogForm'
-import { useAuthenticationValue, useLogout } from '../AuthenticationContext'
+import { useAuthenticationValue } from '../AuthenticationContext'
 import blogService from '../services/blogs'
 import { Link } from 'react-router-dom'
 
 const Blogs = () => {
   const user = useAuthenticationValue()
-  const logout = useLogout()
   const [addBlogVisible, setAddBlogVisible] = useState(false)
 
   const { data: blogs, isLoading, isError } = useQuery({
@@ -40,9 +39,7 @@ const Blogs = () => {
 
   return (
     <div>
-      <h2>blogs</h2>
-      <p>{user.name} logged-in
-        <button onClick={logout}>logout</button></p>
+      <h2>Blogs</h2>
       <div style={hideWhenVisible}>
         <button onClick={() => setAddBlogVisible(true)}>new blog</button>
       </div>
