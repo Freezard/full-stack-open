@@ -3,6 +3,7 @@ import { useSetNotification } from '../NotificationContext'
 import blogService from '../services/blogs'
 import { useAuthenticationValue } from '../AuthenticationContext'
 import { useParams, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 
 const Blog = () => {
   const id = useParams().id
@@ -10,6 +11,7 @@ const Blog = () => {
   const user = useAuthenticationValue()
   const setNotification = useSetNotification()
   const navigate = useNavigate()
+  const [comment, setComment] = useState('')
 
   const updateBlogMutation = useMutation({
     mutationFn: blogService.update,
@@ -41,8 +43,30 @@ const Blog = () => {
     }
   })
 
+  const addCommentMutation = useMutation({
+    mutationFn: blogService.comment,
+    onSuccess: (updatedBlog, { content }) => {
+      const blogs = queryClient.getQueryData(['blogs'])
+      const updatedBlogs = blogs.map(blog =>
+        blog.id !== updatedBlog.id ? blog : { ...updatedBlog, user: blog.user }
+      )
+      queryClient.setQueryData(['blogs'], updatedBlogs)
+
+      setNotification(`Comment added: ${content}`)
+    },
+    onError: (error) => {
+      setNotification(error.response.data.error, 'error')
+    }
+  })
+
   const likeBlog = (blog) => {
     updateBlogMutation.mutate({ ...blog, likes: blog.likes + 1 })
+  }
+
+  const addComment = (event) => {
+    event.preventDefault()
+    addCommentMutation.mutate({ blogId: blog.id, content: comment })
+    setComment('')
   }
 
   const handleDeleteBlog = (blog) => {
@@ -86,6 +110,11 @@ const Blog = () => {
       <button style={deleteButtonStyle} onClick={() => handleDeleteBlog(blog)}>remove</button>
       }
       <h3>comments</h3>
+      <form onSubmit={addComment}>
+        <input value={comment} onChange={event => setComment(event.target.value)}
+          placeholder='Comment' />{' '}
+        <button type="submit">add comment</button>
+      </form>
       <ul>
         {blog.comments.map((c, i) =>
           <li key={i}>{c}</li>
