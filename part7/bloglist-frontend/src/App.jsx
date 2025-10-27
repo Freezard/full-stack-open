@@ -19,7 +19,7 @@ const App = () => {
   }
 
   return (
-    <div>
+    <div className="container">
       <Notification />
       <div>
         <Link style={padding} to="/">blogs</Link>
