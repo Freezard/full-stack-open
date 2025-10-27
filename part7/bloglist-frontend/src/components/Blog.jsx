@@ -4,6 +4,7 @@ import blogService from '../services/blogs'
 import { useAuthenticationValue } from '../AuthenticationContext'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import { Button, ListGroup } from 'react-bootstrap'
 
 const Blog = () => {
   const id = useParams().id
@@ -92,34 +93,27 @@ const Blog = () => {
     return null
   }
 
-  const deleteButtonStyle = {
-    backgroundColor: '#ffaaaa',
-    border: '1px solid red',
-    color: 'darkred',
-    borderRadius: 4
-  }
-
   return (
     <div>
       <h2>{blog.title} by {blog.author}</h2>
       <a href={blog.url}>{blog.url}</a><br />
       <span data-testid="likes">{blog.likes} likes</span>{' '}
-      <button onClick={() => likeBlog(blog)}>like</button><br />
+      <Button variant="secondary" size="sm" onClick={() => likeBlog(blog)}>like</Button><br />
       added by {blog.user.name}<br />
       {user?.id === blog.user.id &&
-      <button style={deleteButtonStyle} onClick={() => handleDeleteBlog(blog)}>remove</button>
+      <Button variant="danger" size="sm" onClick={() => handleDeleteBlog(blog)}>remove</Button>
       }
       <h3>comments</h3>
-      <form onSubmit={addComment}>
+      <form onSubmit={addComment} className="mb-3">
         <input value={comment} onChange={event => setComment(event.target.value)}
           placeholder='Comment' />{' '}
         <button type="submit">add comment</button>
       </form>
-      <ul>
+      <ListGroup>
         {blog.comments.map((c, i) =>
-          <li key={i}>{c}</li>
+          <ListGroup.Item variant="info" key={i}>{c}</ListGroup.Item>
         )}
-      </ul>
+      </ListGroup>
     </div>
   )}
 

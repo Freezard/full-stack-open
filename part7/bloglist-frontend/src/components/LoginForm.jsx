@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useLogin } from '../AuthenticationContext'
+import { Form, Button } from 'react-bootstrap'
 
 const LoginForm = () => {
   const [username, setUsername] = useState('')
@@ -24,29 +25,29 @@ const LoginForm = () => {
   return (
     <div>
       <h2>log in to application</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          username
-          <input
+      <Form onSubmit={handleSubmit}>
+        <Form.Group className="mb-2">
+          <Form.Label>username</Form.Label>
+          <Form.Control
             data-testid='username'
             type="text"
             value={username}
             name="Username"
             onChange={handleUserChange}
           />
-        </div>
-        <div>
-          password
-          <input
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label>password</Form.Label>
+          <Form.Control
             data-testid='password'
             type="password"
             value={password}
             name="Password"
             onChange={handlePasswordChange}
           />
-        </div>
-        <button type="submit">login</button>
-      </form>
+        </Form.Group>
+        <Button variant="primary" type="submit">login</Button>
+      </Form>
     </div>
   )
 }

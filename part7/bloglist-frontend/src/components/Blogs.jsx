@@ -4,6 +4,7 @@ import AddBlogForm from './AddBlogForm'
 import { useAuthenticationValue } from '../AuthenticationContext'
 import blogService from '../services/blogs'
 import { Link } from 'react-router-dom'
+import { Table, Button } from 'react-bootstrap'
 
 const Blogs = () => {
   const user = useAuthenticationValue()
@@ -29,29 +30,25 @@ const Blogs = () => {
   const hideWhenVisible = { display: addBlogVisible ? 'none' : '' }
   const showWhenVisible = { display: addBlogVisible ? '' : 'none' }
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
-
   return (
     <div>
       <h2>Blogs</h2>
-      <div style={hideWhenVisible}>
-        <button onClick={() => setAddBlogVisible(true)}>new blog</button>
+      <div style={hideWhenVisible} className="mb-3">
+        <Button variant="secondary" onClick={() => setAddBlogVisible(true)}>new blog</Button>
       </div>
-      <div style={showWhenVisible}>
+      <div style={showWhenVisible} className="mb-3">
         <AddBlogForm user={user} />
-        <button onClick={() => setAddBlogVisible(false)}>cancel</button>
+        <Button variant="secondary" onClick={() => setAddBlogVisible(false)} className="mt-2" >cancel</Button>
       </div>
-      {sortedBlogs.map(blog =>
-        <div style={blogStyle} key={blog.id}>
-          <Link to={`/blogs/${blog.id}`}>{blog.title} by {blog.author}</Link>
-        </div>
-      )}
+      <Table striped>
+        <tbody>
+          {sortedBlogs.map(blog =>
+            <tr key={blog.id}>
+              <td><Link to={`/blogs/${blog.id}`}>{blog.title} by {blog.author}</Link></td>
+            </tr>
+          )}
+        </tbody>
+      </Table>
     </div>
   )
 }

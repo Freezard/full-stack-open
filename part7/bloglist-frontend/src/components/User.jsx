@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import userService from '../services/users'
 import { useParams } from 'react-router-dom'
+import { ListGroup } from 'react-bootstrap'
 
 const User = () => {
   const id = useParams().id
@@ -29,11 +30,12 @@ const User = () => {
   return (
     <div>
       <h3>added blogs</h3>
-      <ul>
+      <h5>{user.name}</h5>
+      <ListGroup>
         {user.blogs.map(blog =>
-          <li key={blog.id}>{blog.title}</li>
+          <ListGroup.Item variant="secondary" key={blog.id}>{blog.title}</ListGroup.Item>
         )}
-      </ul>
+      </ListGroup>
     </div>
   )
 }

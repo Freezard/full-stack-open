@@ -8,6 +8,7 @@ import { useAuthenticationValue, useLogout } from './AuthenticationContext'
 import {
   Routes, Route, Link, Navigate, useLocation
 } from 'react-router-dom'
+import { Navbar, Nav, Button } from 'react-bootstrap'
 
 const App = () => {
   const user = useAuthenticationValue()
@@ -15,20 +16,33 @@ const App = () => {
   const location = useLocation()
 
   const padding = {
+    color: '#FFF',
+    textDecoration: 'none',
     padding: 5
   }
 
   return (
     <div className="container">
       <Notification />
-      <div>
-        <Link style={padding} to="/">blogs</Link>
-        <Link style={padding} to="/users">users</Link>
-        {user
-          ? <em>{user.name} logged in <button onClick={logout}>logout</button></em>
-          : <Link style={padding} to="/login" state={{ from: location.pathname }}>login</Link>
-        }
-      </div>
+      <Navbar collapseOnSelect expand="lg" bg="primary" variant="light">
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        <Navbar.Collapse id="responsive-navbar-nav">
+          <Nav className="me-auto">
+            <Nav.Link href="#" as="span">
+              <Link style={padding} to="/">blogs</Link>
+            </Nav.Link>
+            <Nav.Link href="#" as="span">
+              <Link style={padding} to="/users">users</Link>
+            </Nav.Link>
+            <Nav.Link href="#" as="span">
+              {user
+                ? <em>{user.name} logged in <Button variant="light" size="sm" onClick={logout}>logout</Button></em>
+                : <Link style={padding} to="/login" state={{ from: location.pathname }}>login</Link>
+              }
+            </Nav.Link>
+          </Nav>
+        </Navbar.Collapse>
+      </Navbar>
       <Routes>
         <Route path="/" element={<Blogs />} />
         <Route path="/blogs/:id" element={<Blog />} />
